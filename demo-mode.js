@@ -1,19 +1,12 @@
 /**
  * kintone デモモード共通スクリプト
  * partner ユーザーでログイン時、データ部分をぼかす
- * 
- * 使用方法：
- * 各アプリのJavaScriptカスタマイズに以下URLを追加
- * https://cdn.jsdelivr.net/gh/YOUR_USERNAME/kintone-common-js/demo-mode.js
  */
 (function() {
   'use strict';
   
   // ========== 設定 ==========
-  // デモモード対象ユーザーのログイン名
   const DEMO_USERS = ['partner'];
-  
-  // ぼかしの強さ（px）
   const BLUR_AMOUNT = 3;
   
   // ========== 処理 ==========
@@ -38,31 +31,49 @@
       const style = document.createElement('style');
       style.id = 'demo-mode-styles';
       style.textContent = `
-        /* ========== kintone標準画面のぼかし ========== */
-        /* 一覧画面 */
+        /* ========== kintone標準画面 ========== */
         .recordlist-cell-gaia,
-        .recordlist-cell-value-gaia {
-          filter: blur(${BLUR_AMOUNT}px);
-          user-select: none;
-        }
-        
-        /* 詳細・編集画面 */
+        .recordlist-cell-value-gaia,
         .value-gaia,
         .control-value-gaia,
         .control-gaia input,
         .control-gaia textarea,
-        .control-gaia select {
+        .control-gaia select,
+        .gaia-argoui-app-titlebar-title-gaia {
           filter: blur(${BLUR_AMOUNT}px);
           user-select: none;
         }
         
-        /* ヘッダーのレコード情報 */
-        .gaia-argoui-app-titlebar-title-gaia {
-          filter: blur(${BLUR_AMOUNT}px);
-        }
+        /* ========== カスタマイズビュー共通 ========== */
+        /* カード系 */
+        .demo-mode .customer-card-name,
+        .demo-mode .customer-card-rep,
+        .demo-mode .customer-card-info-value,
+        .demo-mode .customer-card-revenue-value,
         
-        /* ========== カスタマイズビュー用（汎用クラス） ========== */
-        .demo-blur {
+        /* モーダル系 */
+        .demo-mode .customer-modal-info-value,
+        .demo-mode .deal-modal-info-value,
+        
+        /* フォーム系 */
+        .demo-mode .customer-form-input,
+        .demo-mode .customer-form-textarea,
+        .demo-mode .customer-form-select,
+        .demo-mode .deal-form-input,
+        .demo-mode .deal-form-textarea,
+        .demo-mode .deal-form-select,
+        
+        /* 履歴系 */
+        .demo-mode .customer-minutes-item,
+        .demo-mode .customer-proposal-item,
+        
+        /* ウィザード系 */
+        .demo-mode .wizard-contact-item,
+        .demo-mode #wizard-selected-contact-info,
+        .demo-mode #deal-wizard-customer-display,
+        
+        /* 汎用クラス */
+        .demo-mode .demo-blur {
           filter: blur(${BLUR_AMOUNT}px);
           user-select: none;
         }
@@ -92,7 +103,7 @@
       document.head.appendChild(style);
     }
     
-    // バッジ表示（1回だけ）
+    // バッジ表示
     if (!document.getElementById('demo-mode-badge')) {
       const badge = document.createElement('div');
       badge.id = 'demo-mode-badge';
@@ -101,7 +112,7 @@
       document.body.appendChild(badge);
     }
     
-    // bodyにクラス追加（カスタマイズビューで使用可能）
+    // bodyにクラス追加
     document.body.classList.add('demo-mode');
     
     console.log('[Demo Mode] 有効: ユーザー=' + loginUser.code);
