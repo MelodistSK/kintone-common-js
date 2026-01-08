@@ -8,7 +8,7 @@
   
   // ========== 設定 ==========
   var DEMO_USERS = ['partner'];
-  var BLUR_AMOUNT = 4;
+  var BLUR_AMOUNT = 10;
   
   // ========== イベント登録 ==========
   var events = [
