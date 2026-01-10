@@ -1,12 +1,10 @@
 /**
- * デモモード共通スクリプト v3.1
+ * デモモード共通スクリプト v3.2
  * ボタンクリックでデータをぼかし表示に切り替え
- * 対応: 顧客マスタ, 案件管理, 予定管理, タスク管理, 人脈管理, ポータル売上グラフ
+ * 対応: 顧客マスタ, 案件管理, 予定管理, タスク管理, 人脈管理, ポータル, 営業CSダッシュボード, 人脈ダッシュボード
  */
 (function() {
   'use strict';
-  
-  console.log('[デモモード] スクリプト読み込み開始');
   
   // ========== 設定 ==========
   var BLUR_AMOUNT = 7;
@@ -17,12 +15,7 @@
   
   // ========== CSS注入 ==========
   function injectStyles() {
-    if (document.getElementById('demo-mode-styles')) {
-      console.log('[デモモード] CSS既に注入済み');
-      return;
-    }
-    
-    console.log('[デモモード] CSS注入中...');
+    if (document.getElementById('demo-mode-styles')) return;
     
     var style = document.createElement('style');
     style.id = 'demo-mode-styles';
@@ -155,111 +148,143 @@
       '  user-select: none !important;',
       '}',
       '',
+      '/* --- 営業CSダッシュボード --- */',
+      '.demo-mode .task-card .card-title,',
+      '.demo-mode .task-card > div,',
+      '.demo-mode .modal-header h2,',
+      '.demo-mode .modal-header p,',
+      '.demo-mode .modal-question,',
+      '.demo-mode .modal-description,',
+      '.demo-mode .gijiroku-summary,',
+      '.demo-mode .gijiroku-content,',
+      '.demo-mode .confirm-file-name,',
+      '.demo-mode .confirm-file-info,',
+      '.demo-mode .feedback-form,',
+      '.demo-mode .form-textarea,',
+      '.demo-mode .kakunin-content,',
+      '.demo-mode .interaction-text {',
+      '  filter: blur(' + BLUR_AMOUNT + 'px) !important;',
+      '  user-select: none !important;',
+      '}',
+      '',
+      '/* --- 人脈ダッシュボード --- */',
+      '.demo-mode .person-card,',
+      '.demo-mode .person-name,',
+      '.demo-mode .person-company,',
+      '.demo-mode .person-info,',
+      '.demo-mode .person-relationship,',
+      '.demo-mode .introducer-card-compact,',
+      '.demo-mode .introducer-name-compact,',
+      '.demo-mode .introducer-company-compact,',
+      '.demo-mode .introducer-header-compact,',
+      '.demo-mode .intro-count-compact,',
+      '.demo-mode .intro-score-compact,',
+      '.demo-mode .intro-relationship-compact,',
+      '.demo-mode .score-comparison-compact,',
+      '.demo-mode .detail-name,',
+      '.demo-mode .detail-company,',
+      '.demo-mode .detail-value,',
+      '.demo-mode .detail-memo,',
+      '.demo-mode .detail-relationship,',
+      '.demo-mode .stat-value,',
+      '.demo-mode .introduced-person-item {',
+      '  filter: blur(' + BLUR_AMOUNT + 'px) !important;',
+      '  user-select: none !important;',
+      '}',
+      '',
       '/* --- デモモードトグルボタン --- */',
-      '#demo-mode-toggle {',
-      '  position: fixed !important;',
-      '  top: 12px !important;',
-      '  right: 12px !important;',
-      '  display: flex !important;',
-      '  align-items: center !important;',
-      '  gap: 8px !important;',
-      '  padding: 8px 14px !important;',
-      '  border-radius: 24px !important;',
-      '  font-size: 13px !important;',
-      '  font-weight: 600 !important;',
-      '  cursor: pointer !important;',
-      '  z-index: 999999 !important;',
-      '  transition: all 0.3s ease !important;',
-      '  font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif !important;',
-      '  border: none !important;',
-      '  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;',
-      '  visibility: visible !important;',
-      '  opacity: 1 !important;',
+      '.demo-mode-toggle {',
+      '  position: fixed;',
+      '  top: 12px;',
+      '  right: 12px;',
+      '  display: flex;',
+      '  align-items: center;',
+      '  gap: 8px;',
+      '  padding: 8px 14px;',
+      '  border-radius: 24px;',
+      '  font-size: 13px;',
+      '  font-weight: 600;',
+      '  cursor: pointer;',
+      '  z-index: 99999;',
+      '  transition: all 0.3s ease;',
+      '  font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif;',
+      '  border: none;',
+      '  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);',
       '}',
       '',
       '/* OFFの状態 */',
-      '#demo-mode-toggle.demo-mode-toggle--off {',
-      '  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;',
-      '  color: #64748b !important;',
+      '.demo-mode-toggle--off {',
+      '  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);',
+      '  color: #64748b;',
       '}',
       '',
-      '#demo-mode-toggle.demo-mode-toggle--off:hover {',
-      '  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%) !important;',
-      '  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;',
+      '.demo-mode-toggle--off:hover {',
+      '  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);',
+      '  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);',
       '}',
       '',
       '/* ONの状態 */',
-      '#demo-mode-toggle.demo-mode-toggle--on {',
-      '  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;',
-      '  color: white !important;',
-      '  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4) !important;',
+      '.demo-mode-toggle--on {',
+      '  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);',
+      '  color: white;',
+      '  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);',
       '}',
       '',
-      '#demo-mode-toggle.demo-mode-toggle--on:hover {',
-      '  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;',
-      '  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.5) !important;',
+      '.demo-mode-toggle--on:hover {',
+      '  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);',
+      '  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.5);',
       '}',
       '',
       '/* トグルスイッチ風のインジケーター */',
       '.demo-mode-toggle-switch {',
-      '  width: 36px !important;',
-      '  height: 20px !important;',
-      '  border-radius: 10px !important;',
-      '  position: relative !important;',
-      '  transition: all 0.3s ease !important;',
-      '  display: inline-block !important;',
+      '  width: 36px;',
+      '  height: 20px;',
+      '  border-radius: 10px;',
+      '  position: relative;',
+      '  transition: all 0.3s ease;',
       '}',
       '',
-      '#demo-mode-toggle.demo-mode-toggle--off .demo-mode-toggle-switch {',
-      '  background: #cbd5e1 !important;',
+      '.demo-mode-toggle--off .demo-mode-toggle-switch {',
+      '  background: #cbd5e1;',
       '}',
       '',
-      '#demo-mode-toggle.demo-mode-toggle--on .demo-mode-toggle-switch {',
-      '  background: rgba(255, 255, 255, 0.3) !important;',
+      '.demo-mode-toggle--on .demo-mode-toggle-switch {',
+      '  background: rgba(255, 255, 255, 0.3);',
       '}',
       '',
       '.demo-mode-toggle-switch::after {',
-      '  content: "" !important;',
-      '  position: absolute !important;',
-      '  top: 2px !important;',
-      '  width: 16px !important;',
-      '  height: 16px !important;',
-      '  border-radius: 50% !important;',
-      '  transition: all 0.3s ease !important;',
-      '  background: white !important;',
+      '  content: "";',
+      '  position: absolute;',
+      '  top: 2px;',
+      '  width: 16px;',
+      '  height: 16px;',
+      '  border-radius: 50%;',
+      '  transition: all 0.3s ease;',
       '}',
       '',
-      '#demo-mode-toggle.demo-mode-toggle--off .demo-mode-toggle-switch::after {',
-      '  left: 2px !important;',
+      '.demo-mode-toggle--off .demo-mode-toggle-switch::after {',
+      '  left: 2px;',
+      '  background: white;',
       '}',
       '',
-      '#demo-mode-toggle.demo-mode-toggle--on .demo-mode-toggle-switch::after {',
-      '  left: 18px !important;',
+      '.demo-mode-toggle--on .demo-mode-toggle-switch::after {',
+      '  left: 18px;',
+      '  background: white;',
       '}'
     ].join('\n');
     document.head.appendChild(style);
-    console.log('[デモモード] CSS注入完了');
   }
   
   // ========== ボタン作成 ==========
   function createToggleButton() {
-    // 既存のボタンがあれば削除して再作成
-    var existing = document.getElementById('demo-mode-toggle');
-    if (existing) {
-      existing.remove();
-    }
-    
-    console.log('[デモモード] ボタン作成中...');
+    if (document.getElementById('demo-mode-toggle')) return;
     
     var button = document.createElement('button');
     button.id = 'demo-mode-toggle';
-    button.type = 'button';
+    button.className = 'demo-mode-toggle';
     updateButtonState(button);
     
-    button.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log('[デモモード] ボタンクリック');
+    button.addEventListener('click', function() {
       isDemoMode = !isDemoMode;
       localStorage.setItem(STORAGE_KEY, isDemoMode);
       applyDemoMode();
@@ -267,16 +292,15 @@
     });
     
     document.body.appendChild(button);
-    console.log('[デモモード] ボタン作成完了');
   }
   
   // ========== ボタン状態更新 ==========
   function updateButtonState(button) {
     if (isDemoMode) {
-      button.className = 'demo-mode-toggle--on';
+      button.className = 'demo-mode-toggle demo-mode-toggle--on';
       button.innerHTML = '<span>🔒 デモモード ON</span><span class="demo-mode-toggle-switch"></span>';
     } else {
-      button.className = 'demo-mode-toggle--off';
+      button.className = 'demo-mode-toggle demo-mode-toggle--off';
       button.innerHTML = '<span>👁 デモモード OFF</span><span class="demo-mode-toggle-switch"></span>';
     }
   }
@@ -285,20 +309,16 @@
   function applyDemoMode() {
     if (isDemoMode) {
       document.body.classList.add('demo-mode');
-      console.log('[デモモード] ON');
     } else {
       document.body.classList.remove('demo-mode');
-      console.log('[デモモード] OFF');
     }
   }
   
   // ========== 初期化 ==========
   function init() {
-    console.log('[デモモード] 初期化開始');
     injectStyles();
     createToggleButton();
     applyDemoMode();
-    console.log('[デモモード] 初期化完了');
   }
   
   // ========== イベント登録 ==========
@@ -309,27 +329,25 @@
     'app.record.edit.show',
     'mobile.app.record.index.show',
     'mobile.app.record.detail.show',
-    'portal.show'
+    'portal.show',
+    'space.portal.show',
+    'mobile.space.portal.show'
   ];
   
   kintone.events.on(events, function(event) {
-    console.log('[デモモード] kintoneイベント発火:', event.type);
-    // 少し遅延させて確実にDOMが準備されてから実行
-    setTimeout(init, 100);
+    init();
     return event;
   });
   
-  // ページ読み込み時にも実行（kintoneイベントが発火しない場合の対策）
-  function initOnLoad() {
-    console.log('[デモモード] ページ読み込み検知');
-    setTimeout(init, 500);
-  }
-  
-  if (document.readyState === 'complete') {
-    initOnLoad();
+  // DOMContentLoadedでも初期化（イベント発火前に表示される場合の対策）
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    window.addEventListener('load', initOnLoad);
+    init();
   }
   
-  console.log('[デモモード] スクリプト読み込み完了');
+  // hashchangeでも初期化（スペース移動時）
+  window.addEventListener('hashchange', function() {
+    setTimeout(init, 100);
+  });
 })();
