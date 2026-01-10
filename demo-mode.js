@@ -1,13 +1,13 @@
 /**
- * デモモード共通スクリプト v2.0
+ * デモモード共通スクリプト v2.1
  * 特定ユーザーでログイン時にデータをぼかし表示
- * 対応: 顧客マスタ, 案件管理, 予定管理, タスク管理, 人脈管理
+ * 対応: 顧客マスタ, 案件管理, 予定管理, タスク管理, 人脈管理, ポータル売上グラフ
  */
 (function() {
   'use strict';
   
   // ========== 設定 ==========
-  var DEMO_USERS = ['partner'];
+  var DEMO_USERS = ['online_secretary+demo@mamayoro.com'];
   var BLUR_AMOUNT = 10;
   
   // ========== イベント登録 ==========
@@ -17,7 +17,8 @@
     'app.record.create.show',
     'app.record.edit.show',
     'mobile.app.record.index.show',
-    'mobile.app.record.detail.show'
+    'mobile.app.record.detail.show',
+    'portal.show'
   ];
   
   kintone.events.on(events, function(event) {
@@ -111,6 +112,52 @@
         '.demo-mode .interaction-item,',
         '.demo-mode .interaction-content,',
         '.demo-mode .magical-preview {',
+        '  filter: blur(' + BLUR_AMOUNT + 'px) !important;',
+        '  user-select: none !important;',
+        '}',
+        '',
+        '/* --- ポータル 売上グラフ・サマリー --- */',
+        '.demo-mode .chart-value,',
+        '.demo-mode .chart-bar-segment,',
+        '.demo-mode .segment-tooltip,',
+        '.demo-mode .tooltip-row,',
+        '.demo-mode .tooltip-company,',
+        '.demo-mode .tooltip-amount,',
+        '.demo-mode .revenue-summary-value,',
+        '.demo-mode .revenue-summary-change {',
+        '  filter: blur(' + BLUR_AMOUNT + 'px) !important;',
+        '  user-select: none !important;',
+        '}',
+        '',
+        '/* --- ポータル パイプライン・アラート --- */',
+        '.demo-mode .pipeline-count,',
+        '.demo-mode .summary-value,',
+        '.demo-mode .alert-text,',
+        '.demo-mode .alert-text a {',
+        '  filter: blur(' + BLUR_AMOUNT + 'px) !important;',
+        '  user-select: none !important;',
+        '}',
+        '',
+        '/* --- ポータル 顧客ポートフォリオ --- */',
+        '.demo-mode .rank-count,',
+        '.demo-mode .rank-bar-fill,',
+        '.demo-mode .industry-count {',
+        '  filter: blur(' + BLUR_AMOUNT + 'px) !important;',
+        '  user-select: none !important;',
+        '}',
+        '',
+        '/* --- ポータル 人脈リマインダー --- */',
+        '.demo-mode .contact-name,',
+        '.demo-mode .contact-company,',
+        '.demo-mode .contact-date {',
+        '  filter: blur(' + BLUR_AMOUNT + 'px) !important;',
+        '  user-select: none !important;',
+        '}',
+        '',
+        '/* --- ポータル 予定・タスク一覧 --- */',
+        '.demo-mode .list-item-title,',
+        '.demo-mode .list-item-meta,',
+        '.demo-mode .list-item-time {',
         '  filter: blur(' + BLUR_AMOUNT + 'px) !important;',
         '  user-select: none !important;',
         '}',
