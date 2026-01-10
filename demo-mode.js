@@ -7,7 +7,7 @@
   'use strict';
   
   // ========== 設定 ==========
-  var BLUR_AMOUNT = 7;
+  var BLUR_AMOUNT = 5;
   var STORAGE_KEY = 'kintone-demo-mode';
   
   // ========== 状態管理 ==========
