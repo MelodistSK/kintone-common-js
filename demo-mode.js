@@ -9,7 +9,7 @@
   console.log('[デモモード] スクリプト読み込み開始');
   
   // ========== 設定 ==========
-  var BLUR_AMOUNT = 10;
+  var BLUR_AMOUNT = 7;
   var STORAGE_KEY = 'kintone-demo-mode';
   
   // ========== 状態管理 ==========
